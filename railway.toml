@@ -1,0 +1,32 @@
+# ============================================================
+# railway.toml — Railway 平台部署配置
+# 放在项目根目录，Railway 自动读取
+# ============================================================
+
+[build]
+# 使用项目根目录的 Dockerfile 构建
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# 启动命令（Dockerfile 内已定义，这里可覆盖）
+startCommand = "node /directus/cli.js bootstrap && npx directus start"
+
+# 健康检查：Railway 用此判断服务是否启动成功
+healthcheckPath = "/server/health"
+healthcheckTimeout = 120       # 秒，首次启动数据库迁移较慢
+
+# 自动重启策略
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# 部署区域（选离目标用户最近的）
+# 可选: us-west1 / us-east4 / eu-west4 / asia-east1 / asia-southeast1
+# region = "asia-east1"
+
+[[services]]
+name = "directus"
+
+  [services.variables]
+  # 端口（Railway 自动注入 PORT 变量，Directus 需读取它）
+  PORT = "8055"
